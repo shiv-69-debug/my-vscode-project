@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Interview Prep</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+    label { display: block; margin-top: 10px; }
+    input, select { padding: 5px; margin-top: 5px; width: 100%; max-width: 300px; }
+    button { margin-top: 15px; padding: 8px 16px; }
+    .qa-item { margin-top: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    .question { font-weight: bold; }
+    .answer { margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <h1>AI Interview Preparation</h1>
+
+  <form id="qaForm">
+    <label>
+      Role:
+      <input type="text" id="role" placeholder="e.g. Python Developer" required>
+    </label>
+
+    <label>
+      Difficulty:
+      <select id="difficulty">
+        <option value="Easy">Easy</option>
+        <option value="Medium" selected>Medium</option>
+        <option value="Hard">Hard</option>
+      </select>
+    </label>
+
+    <label>
+      Number of Q+A pairs:
+      <input type="number" id="count" value="3" min="1" max="10" required>
+    </label>
+
+    <button type="submit">Generate</button>
+  </form>
+
+  <h2>Results</h2>
+  <div id="results"></div>
+
+  <script>
+    const form = document.getElementById('qaForm');
+    const resultsDiv = document.getElementById('results');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault(); // stop page reload
+
+      resultsDiv.innerHTML = "Loading...";
+
+      const role = document.getElementById('role').value;
+      const difficulty = document.getElementById('difficulty').value;
+      const count = document.getElementById('count').value;
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/generate_qa', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            role: role,
+            difficulty: difficulty,
+            count: Number(count)
+          })
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          resultsDiv.innerHTML = "Error: " + (errorData.error || response.statusText);
+          return;
+        }
+
+        const data = await response.json();
+
+        // Clear results
+        resultsDiv.innerHTML = "";
+
+        if (!data.items || data.items.length === 0) {
+          resultsDiv.innerHTML = "No items returned.";
+          return;
+        }
+
+        data.items.forEach((item, index) => {
+          const container = document.createElement('div');
+          container.className = 'qa-item';
+
+          const q = document.createElement('div');
+          q.className = 'question';
+          q.textContent = `Q${index + 1}: ${item.question}`;
+
+          const a = document.createElement('div');
+          a.className = 'answer';
+          a.textContent = `A${index + 1}: ${item.answer}`;
+
+          container.appendChild(q);
+          container.appendChild(a);
+          resultsDiv.appendChild(container);
+        });
+
+      } catch (err) {
+        resultsDiv.innerHTML = "Error calling API: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>

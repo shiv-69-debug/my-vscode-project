@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Interview Practice</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 2rem auto; }
+    textarea { width: 100%; min-height: 120px; }
+    .question { margin-bottom: 1rem; font-weight: 600; }
+    .scores { margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Interview Practice</h1>
+
+  <div>
+    <label>
+      Role:
+      <input id="roleInput" value="Python Developer">
+    </label>
+    <label>
+      Difficulty:
+      <select id="difficultyInput">
+        <option value="easy">easy</option>
+        <option value="medium" selected>medium</option>
+        <option value="hard">hard</option>
+      </select>
+    </label>
+    <button id="generateBtn">Generate Question</button>
+  </div>
+
+  <div class="question" id="questionBox"></div>
+
+  <div>
+    <label>Your answer:</label>
+    <textarea id="answerInput"></textarea>
+  </div>
+
+  <button id="evaluateBtn">Evaluate Answer</button>
+
+  <div class="scores" id="scoresBox"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
